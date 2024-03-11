@@ -1,4 +1,24 @@
+const assignment = {                                // Object state persists as long as server is running. Changes to the object perseist. Rebooting server resets the object.
+    id: 1, title: "NodeJS Assignment",
+    description: "Create a NodeJS server with ExpressJS",
+    due: "2021-10-10", completed: false, score: 0,
+};
+
 const Lab5 = (app) => {                             // Accept app reference to express module.
+    app.get("/a5/assignment", (req, res) => {
+        res.json(assignment);                       // Use .json() instead of .send() if you know the response is formatted as JSON.
+    });
+
+    app.get("/a5/assignment/title", (req, res) => {     // Respond with string property/
+        res.json(assignment.title);                     // Can do the same with other properties.
+    });   
+    
+    app.get("/a5/assignment/title/:newTitle", (req, res) => {
+        const { newTitle } = req.params;            // Changes to objects in the server
+        assignment.title = newTitle;                // persist as long as the server is running.
+        res.json(assignment);                       // Rebooting the server resets the object state.
+    });    
+
     app.get("/a5/welcome", (req, res) => {          // Create route to welcome users to assignment 5.
         res.send("Welcome to Assignment 5");        // Here we are using the arrow function syntax.
     });
