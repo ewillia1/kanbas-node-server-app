@@ -61,8 +61,16 @@ const Lab5 = (app) => {                             // Accept app reference to e
           todos.splice(todoIndex, 1);
         }
         res.json(todos);
-    });    
-
+    });  
+    
+    // Encode the ID of the item to update as a path parameter. Search for item in set of items and update it.
+    app.get("/a5/todos/:id/title/:title", (req, res) => {
+        const { id, title } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        todo.title = title;
+        res.json(todos);
+    });
+    
     app.get("/a5/assignment", (req, res) => {
         res.json(assignment);                       // Use .json() instead of .send() if you know the response is formatted as JSON.
     });
