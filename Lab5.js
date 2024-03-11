@@ -17,6 +17,14 @@ const todos = [
 
 const Lab5 = (app) => {                             // Accept app reference to express module.
     app.get("/a5/todos", (req, res) => {
+        const { completed } = req.query;
+        if (completed !== undefined) {
+            const completedBool = completed === "true";
+            const completedTodos = todos.filter((t) => t.completed === completedBool);
+            res.json(completedTodos);
+            return;
+        }
+
         res.json(todos);
     });
 
