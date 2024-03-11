@@ -52,6 +52,17 @@ const Lab5 = (app) => {                             // Accept app reference to e
         res.json(todo);
     });    
 
+    // Encode the ID of the item to delete as a path parameter. Search for item in set of items and remove it.
+    app.get("/a5/todos/:id/delete", (req, res) => {
+        const { id } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        const todoIndex = todos.indexOf(todo);
+        if (todoIndex !== -1) {
+          todos.splice(todoIndex, 1);
+        }
+        res.json(todos);
+    });    
+
     app.get("/a5/assignment", (req, res) => {
         res.json(assignment);                       // Use .json() instead of .send() if you know the response is formatted as JSON.
     });
