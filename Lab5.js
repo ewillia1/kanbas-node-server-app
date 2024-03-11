@@ -8,7 +8,18 @@ const module = {
     id: "M1A101", name: "Module 1", description: "This is the description for module 1.", course: "A101"
 };
 
+const todos = [
+    { id: 1, title: "Task 1", completed: false },
+    { id: 2, title: "Task 2", completed: true },
+    { id: 3, title: "Task 3", completed: false },
+    { id: 4, title: "Task 4", completed: true },
+];
+
 const Lab5 = (app) => {                             // Accept app reference to express module.
+    app.get("/a5/todos", (req, res) => {
+        res.json(todos);
+    });
+
     app.get("/a5/assignment", (req, res) => {
         res.json(assignment);                       // Use .json() instead of .send() if you know the response is formatted as JSON.
     });
