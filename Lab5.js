@@ -16,6 +16,9 @@ const todos = [
 ];
 
 const Lab5 = (app) => {                             // Accept app reference to express module.
+    // Retrieve particular item from a collection to encode the item's ID as a path parameter.
+    // Another convention is that if the primary key is not provided, then the interpretation is that we want the entire collection of items.
+    // We can also want to retrieve items by some other criteria other than the item's ID such as the item's title or completed properties.
     app.get("/a5/todos", (req, res) => {
         const { completed } = req.query;
         if (completed !== undefined) {
@@ -25,6 +28,19 @@ const Lab5 = (app) => {                             // Accept app reference to e
             return;
         }
 
+        res.json(todos);
+    });
+
+    // A route that creates a new item in the array and responds with the array now containing the new item.
+    // Note that this is implemented before then /a5/todos/:id route, otherwise the :id path parameter would interpret the "create"
+    // in /a5/todos/create as an iD.
+    app.get("/a5/todos/create", (req, res) => {
+        const newTodo = {
+          id: new Date().getTime(),         //  Create default values including a unique identifier field id based on a timestamp.
+          title: "New Task",
+          completed: false,
+        };
+        todos.push(newTodo);
         res.json(todos);
     });
 
