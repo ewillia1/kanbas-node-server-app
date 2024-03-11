@@ -4,6 +4,10 @@ const assignment = {                                // Object state persists as 
     due: "2021-10-10", completed: false, score: 0,
 };
 
+const module = {
+    id: "M1A101", name: "Module 1", description: "This is the description for module 1.", course: "A101"
+};
+
 const Lab5 = (app) => {                             // Accept app reference to express module.
     app.get("/a5/assignment", (req, res) => {
         res.json(assignment);                       // Use .json() instead of .send() if you know the response is formatted as JSON.
@@ -17,7 +21,39 @@ const Lab5 = (app) => {                             // Accept app reference to e
         const { newTitle } = req.params;            // Changes to objects in the server
         assignment.title = newTitle;                // persist as long as the server is running.
         res.json(assignment);                       // Rebooting the server resets the object state.
-    });    
+    }); 
+
+    app.get("/a5/assignment/score/:newScore", (req, res) => {
+        const { newScore } = req.params;
+        assignment.score = newScore;
+        res.json(assignment);
+    }); 
+
+    app.get("/a5/assignment/completed/:newCompleted", (req, res) => {
+        const { newCompleted } = req.params;
+        assignment.completed = newCompleted;
+        res.json(assignment);
+    }); 
+    
+    app.get("/a5/module", (req, res) => {
+        res.json(module);                       // Use .json() instead of .send() if you know the response is formatted as JSON.
+    });
+
+    app.get("/a5/module/name", (req, res) => {     // Respond with string property/
+        res.json(module.name);                     // Can do the same with other properties.
+    });   
+    
+    app.get("/a5/module/name/:newName", (req, res) => {
+        const { newName } = req.params;            // Changes to objects in the server
+        module.name = newName;                // persist as long as the server is running.
+        res.json(module);                       // Rebooting the server resets the object state.
+    }); 
+
+    app.get("/a5/module/description/:newDescription", (req, res) => {
+        const { newDescription } = req.params;
+        module.description = newDescription;
+        res.json(module);
+    }); 
 
     app.get("/a5/welcome", (req, res) => {          // Create route to welcome users to assignment 5.
         res.send("Welcome to Assignment 5");        // Here we are using the arrow function syntax.
