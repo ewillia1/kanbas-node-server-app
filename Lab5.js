@@ -20,6 +20,14 @@ const Lab5 = (app) => {                             // Accept app reference to e
         res.json(todos);
     });
 
+    // Retrieve particular item from an array by its primary key, e.g., its ID property.
+    // The convention is to encode the ID of the item of interest as a path parameter.
+    app.get("/a5/todos/:id", (req, res) => {
+        const { id } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        res.json(todo);
+    });    
+
     app.get("/a5/assignment", (req, res) => {
         res.json(assignment);                       // Use .json() instead of .send() if you know the response is formatted as JSON.
     });
