@@ -6,6 +6,7 @@ import cors from "cors";                                        // Import cors l
 
 const app = express();                                          // Create new express instance.
 app.use(cors());                                                // Make sure cors is used right after creating the app express instance.
+app.use(express.json());                                        // Make sure this statement occurs AFTER setting up CORS.
 Lab5(app);
 Hello(app);
 app.listen(4000);                                               // Listen to http://localhost:4000

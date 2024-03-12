@@ -16,6 +16,18 @@ const todos = [
 ];
 
 const Lab5 = (app) => {                             // Accept app reference to express module.
+
+    // Grab posted JSON data from req.body and use it to define newTodo.
+    // Does not respond with entire array and instead only responds with the newly created todo object instance.
+    app.post("/a5/todos", (req, res) => {
+        const newTodo = {
+            ...req.body,
+            id: new Date().getTime(),
+        };
+        todos.push(newTodo);
+        res.json(newTodo);
+    });
+
     // Retrieve particular item from a collection to encode the item's ID as a path parameter.
     // Another convention is that if the primary key is not provided, then the interpretation is that we want the entire collection of items.
     // We can also want to retrieve items by some other criteria other than the item's ID such as the item's title or completed properties.
