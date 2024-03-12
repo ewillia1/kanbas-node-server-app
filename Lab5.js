@@ -9,10 +9,10 @@ const module = {
 };
 
 const todos = [
-    { id: 1, title: "Task 1", description: "This is the test description for Task 1.", completed: false },
-    { id: 2, title: "Task 2", description: "This is the test description for Task 2.", completed: true },
-    { id: 3, title: "Task 3", description: "This is the test description for Task 3.", completed: false },
-    { id: 4, title: "Task 4", description: "This is the test description for Task 4.", completed: true },
+    { id: 1, title: "Task 1", description: "This is the test description for Task 1.", due: "2021-09-09", completed: false },
+    { id: 2, title: "Task 2", description: "This is the test description for Task 2.", due: "2021-09-09", completed: true },
+    { id: 3, title: "Task 3", description: "This is the test description for Task 3.", due: "2021-09-09", completed: false },
+    { id: 4, title: "Task 4", description: "This is the test description for Task 4.", due: "2021-09-09", completed: true },
 ];
 
 const Lab5 = (app) => {                             // Accept app reference to express module.
