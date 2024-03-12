@@ -9,10 +9,10 @@ const module = {
 };
 
 const todos = [
-    { id: 1, title: "Task 1", completed: false },
-    { id: 2, title: "Task 2", completed: true },
-    { id: 3, title: "Task 3", completed: false },
-    { id: 4, title: "Task 4", completed: true },
+    { id: 1, title: "Task 1", description: "This is the test description for Task 1.", completed: false },
+    { id: 2, title: "Task 2", description: "This is the test description for Task 2.", completed: true },
+    { id: 3, title: "Task 3", description: "This is the test description for Task 3.", completed: false },
+    { id: 4, title: "Task 4", description: "This is the test description for Task 4.", completed: true },
 ];
 
 const Lab5 = (app) => {                             // Accept app reference to express module.
@@ -68,6 +68,20 @@ const Lab5 = (app) => {                             // Accept app reference to e
         const { id, title } = req.params;
         const todo = todos.find((t) => t.id === parseInt(id));
         todo.title = title;
+        res.json(todos);
+    });
+
+    app.get("/a5/todos/:id/completed/:completed", (req, res) => {
+        const { id, completed } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        todo.completed = completed;
+        res.json(todos);
+    });
+
+    app.get("/a5/todos/:id/description/:description", (req, res) => {
+        const { id, description } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        todo.description = description;
         res.json(todos);
     });
     
