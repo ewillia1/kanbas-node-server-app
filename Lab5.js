@@ -64,6 +64,15 @@ const Lab5 = (app) => {                             // Accept app reference to e
         res.json(todo);
     });    
 
+    // Instead of having the delete verb (like in the below route), this implementation uses the HTTP delet verb to handle
+    // removing the item by its ID.
+    app.delete("/a5/todos/:id", (req, res) => {
+        const { id } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        todos.splice(todos.indexOf(todo), 1);
+        res.sendStatus(200);                            // Responds with a simple OK status code of 200.
+    });    
+
     // Encode the ID of the item to delete as a path parameter. Search for item in set of items and remove it.
     app.get("/a5/todos/:id/delete", (req, res) => {
         const { id } = req.params;
