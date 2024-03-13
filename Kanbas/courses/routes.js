@@ -1,6 +1,20 @@
 import Database from "../Database/index.js";
 
 function CourseRoutes(app) {
+    // Get route that parses the id of course as a path parameter and responds with the corresponding
+    // course in the Database's courses array.
+    // If the course is not available a status code of 404 is sent back along with a short message in the response.
+    // If a course is found, it is sent in the response.
+    app.get("/api/courses/:id", (req, res) => {
+        const { id } = req.params;
+        const course = Database.courses.find((c) => c._id === id);
+        if (!course) {
+            res.status(404).send("Course not found");
+            return;
+        }
+        res.send(course);
+    });    
+
     // Put route that parses the id of course as a path parameter and updates the corresponding course with the updates in HTTP
     // request body. Database's courses array is updated with new version of corresponding course.
     // Successful status 204 is sent back as the response.
