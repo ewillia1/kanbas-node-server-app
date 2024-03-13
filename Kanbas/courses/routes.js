@@ -1,6 +1,14 @@
 import Database from "../Database/index.js";
 
 function CourseRoutes(app) {
+    // Delete route that parses the id of course as a path parameter and removes the corresponding course
+    // from the Database's courses array. Status 204 is sent back as the response.
+    app.delete("/api/courses/:id", (req, res) => {
+        const { id } = req.params;
+        Database.courses = Database.courses.filter((c) => c._id !== id);
+        res.sendStatus(204);
+    });    
+
     // Route that creates a new course and adds it to the Database.
     // New course is passed into the HTTP body from the client and is appended to the end of the courses array in the Dashboard.
     // New course is given a new unique identifier and sent back to the client in the response.
