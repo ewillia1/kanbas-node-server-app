@@ -1,6 +1,16 @@
 import Database from "../Database/index.js";
 
 function CourseRoutes(app) {
+    // Put route that parses the id of course as a path parameter and updates the corresponding course with the updates in HTTP
+    // request body. Database's courses array is updated with new version of corresponding course.
+    // Successful status 204 is sent back as the response.
+    app.put("/api/courses/:id", (req, res) => {
+        const { id } = req.params;
+        const course = req.body;
+        Database.courses = Database.courses.map((c) => c._id === id ? { ...c, ...course } : c);
+        res.sendStatus(204);
+    });
+    
     // Delete route that parses the id of course as a path parameter and removes the corresponding course
     // from the Database's courses array. Status 204 is sent back as the response.
     app.delete("/api/courses/:id", (req, res) => {
