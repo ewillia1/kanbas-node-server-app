@@ -39,7 +39,6 @@ const Lab5 = (app) => {                             // Accept app reference to e
             res.json(completedTodos);
             return;
         }
-
         res.json(todos);
     });
 
@@ -64,12 +63,32 @@ const Lab5 = (app) => {                             // Accept app reference to e
         res.json(todo);
     });    
 
-    // Instead of having the delete verb (like in the below route), this implementation uses the HTTP delet verb to handle
+    // Instead of having the delete verb (like in the below route), this implementation uses the HTTP delete verb to handle
     // removing the item by its ID.
     app.delete("/a5/todos/:id", (req, res) => {
         const { id } = req.params;
         const todo = todos.find((t) => t.id === parseInt(id));
+        if (!todo) {
+            res.status(404).json({ message: `Unable to delete Todo with ID ${id}` });
+            return;
+        }      
         todos.splice(todos.indexOf(todo), 1);
+        res.sendStatus(200);                            // Responds with a simple OK status code of 200.
+    });   
+    
+    // This implementation uses a single HTTP put verb to implement updating the item by its ID.
+    // The updates are embedded in the HTTP body from which we copy the new values onto the old todo.
+    app.put("/a5/todos/:id", (req, res) => {
+        const { id } = req.params;
+        const todo = todos.find((t) => t.id === parseInt(id));
+        if (!todo) {
+            res.status(404).json({ message: `Unable to update Todo with ID ${id}` });
+            return;
+        }      
+        todo.title = req.body.title;
+        todo.description = req.body.description;
+        todo.due = req.body.due;
+        todo.completed = req.body.completed;
         res.sendStatus(200);                            // Responds with a simple OK status code of 200.
     });    
 
