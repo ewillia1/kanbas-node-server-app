@@ -2,7 +2,7 @@ import db from "../Database/index.js";
 
 function ModuleRoutes(app) {
     // Route that handles an HTTP PUT request with the module's ID embedded in the path and that updates in the HTTP body.
-    // Parse the module's ID from the request parameters, find the module in the database, and then updat corresponding module
+    // Parse the module's ID from the request parameters, find the module in the database, and then update corresponding module
     // with values in the request body.
     app.put("/api/modules/:mid", (req, res) => {
         const { mid } = req.params;
