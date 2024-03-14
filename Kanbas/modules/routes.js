@@ -1,6 +1,19 @@
 import db from "../Database/index.js";
 
 function ModuleRoutes(app) {
+    // Route that handles an HTTP PUT request with the module's ID embedded in the path and that updates in the HTTP body.
+    // Parse the module's ID from the request parameters, find the module in the database, and then updat corresponding module
+    // with values in the request body.
+    app.put("/api/modules/:mid", (req, res) => {
+        const { mid } = req.params;
+        const moduleIndex = db.modules.findIndex((m) => m._id === mid);
+        db.modules[moduleIndex] = {...db.modules[moduleIndex], ...req.body};
+        if (!db.modules) {
+            res.status(404).json({ message: `Unable to update Module with ID ${id}` });
+        }
+        res.sendStatus(204);
+    });
+
     // Route that handles an HTTP DELETE method with the module's ID embedded in the URL.
     // mid request parameter is used to filter out the module from the modules array in the database.
     // Respond with a 200 status signifying success.
