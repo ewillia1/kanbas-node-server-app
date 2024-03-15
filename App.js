@@ -15,4 +15,6 @@ CourseRoutes(app);
 AssignmentRoutes(app);
 Lab5(app);
 Hello(app);
-app.listen(4000);                                               // Listen to http://localhost:4000
+
+// Use the PORT environment variable if available, or use 4000 otherwise when running local machine.
+app.listen(process.env.PORT || 4000);                           // Listen to http://localhost:4000 OR the port declared in an environment variable called PORT available through process.env.PORT.
