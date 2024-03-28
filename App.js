@@ -7,6 +7,7 @@ import CourseRoutes from "./Kanbas/courses/routes.js";
 import cors from "cors";                                        // Import cors library.
 import ModuleRoutes from './Kanbas/modules/routes.js';
 import AssignmentRoutes from './Kanbas/assignments/routes.js';
+import UserRoutes from './Kanbas/users/routes.js';
 
 mongoose.connect("mongodb://127.0.0.1:27017/kanbas");           // Connect to the kanbas database.
 const app = express();                                          // Create new express instance.
@@ -15,6 +16,7 @@ app.use(express.json());                                        // Make sure thi
 ModuleRoutes(app);                                              // and then configure new routes.
 CourseRoutes(app);
 AssignmentRoutes(app);
+UserRoutes(app);
 Lab5(app);
 Hello(app);
 
