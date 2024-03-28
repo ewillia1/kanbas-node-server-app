@@ -1,5 +1,6 @@
 // const express = require('express')                           // Equivalent to import.
 import express from 'express';                                  // Now we can use import syntax instead of require.
+import mongoose from "mongoose";
 import Hello from "./Hello.js";
 import Lab5 from "./Lab5.js";
 import CourseRoutes from "./Kanbas/courses/routes.js";
@@ -7,6 +8,7 @@ import cors from "cors";                                        // Import cors l
 import ModuleRoutes from './Kanbas/modules/routes.js';
 import AssignmentRoutes from './Kanbas/assignments/routes.js';
 
+mongoose.connect("mongodb://127.0.0.1:27017/kanbas");           // Connect to the kanbas database.
 const app = express();                                          // Create new express instance.
 app.use(cors());                                                // Make sure cors is used right after creating the app express instance.
 app.use(express.json());                                        // Make sure this statement occurs AFTER setting up CORS. Configure JSON HTTP body parsting first
