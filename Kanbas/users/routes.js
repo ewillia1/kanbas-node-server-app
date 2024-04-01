@@ -2,22 +2,32 @@ import * as dao from "./dao.js";
 
 export default function UserRoutes(app) {
     app.get("/api/users", async (req, res) => {
-        const currentUser = req.session["currentUser"];
+        try {
+            const currentUser = req.session["currentUser"];
 
-        // Check to make sure not just anyone can access all users.
-        if (!currentUser || currentUser.role !== "ADMIN") {
-            res.status(401).send("Unauthorized");
-            return;
+            // Check to make sure not just anyone can access all users.
+            if (!currentUser || currentUser.role !== "ADMIN") {
+                res.status(401).send("Unauthorized");
+                return;
+            }
+    
+            const users = await dao.findAllUsers();
+            res.json(users);
+        } catch (e) {
+            console.log("Error getting all the users: " + e);
+            res.status(400).send("Error getting all the users");
         }
-
-        const users = await dao.findAllUsers();
-        res.json(users);
     });
 
     app.get("/api/users/:userId", async (req, res) => {
-        const userId = req.params.userId;
-        const user = await dao.findUserById(userId);
-        res.send(user);
+        try {
+            const userId = req.params.userId;
+            const user = await dao.findUserById(userId);
+            res.send(user);
+        } catch (e) {
+            console.log("Error getting a user: " + e);
+            res.status(400).send("Error getting a user");
+        }
     });
 
     app.post("/api/users", async (req, res) => {
@@ -53,7 +63,7 @@ export default function UserRoutes(app) {
             const status = await dao.updateUser(id, user);
             res.json(status);
         } catch (e) {
-            console.log("Error when updating a user: " + e);
+            console.log("Error updating a user: " + e);
             res.status(400).send("Error updating user");
         }
     });
@@ -64,7 +74,7 @@ export default function UserRoutes(app) {
             const status = await dao.deleteUser(id);
             res.send(status);
         } catch (e) {
-            console.log("Error when deleting a user: " + e);
+            console.log("Error deleting a user: " + e);
             res.status(400).send("Error deleting user");
         }
     });
@@ -89,7 +99,7 @@ export default function UserRoutes(app) {
             console.log("[5] req.session", req.session);
             res.send(newUser);
         } catch (e) {
-            console.log("Error Creating User: " + e);
+            console.log("Error creating user: " + e);
             res.status(400).send("Error creating user");
         }
     });
