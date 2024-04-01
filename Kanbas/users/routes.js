@@ -32,12 +32,10 @@ export default function UserRoutes(app) {
         const user = req.body;
         delete user._id;
 
-        console.log("in put. id = " + id + ", user = " + JSON.stringify(user));
-
-        const currentUser = req.session["currentUser"];
-        console.log("currentUser = " + JSON.stringify(currentUser));
         // If the current user is logged in and has updated their profile,
         // update the current user information.
+        const currentUser = req.session["currentUser"];
+        console.log("currentUser = " + JSON.stringify(currentUser));
         if (currentUser) {
             req.session["currentUser"] = user;
         }
