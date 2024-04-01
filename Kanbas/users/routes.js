@@ -1,24 +1,71 @@
 import * as dao from "./dao.js";
 
-let currentUser = null;
-
 export default function UserRoutes(app) {
-    const createUser = async (req, res) => { };
-    const deleteUser = async (req, res) => { };
-    const findAllUsers = async (req, res) => { };
-    const findUserById = async (req, res) => { };
-    const updateUser = async (req, res) => { };
-    const signup = async (req, res) => { };
-    const signin = async (req, res) => { };
-    const signout = (req, res) => { };
-    const profile = async (req, res) => { };
-    app.post("/api/users", createUser);
-    app.get("/api/users", findAllUsers);
-    app.get("/api/users/:userId", findUserById);
-    app.put("/api/users/:userId", updateUser);
-    app.delete("/api/users/:userId", deleteUser);
-    app.post("/api/users/signup", signup);
-    app.post("/api/users/signin", signin);
-    app.post("/api/users/signout", signout);
-    app.post("/api/users/profile", profile);
-}
+    app.get("/api/users", async (req, res) => {
+        const users = await dao.findAllUsers();
+        res.json(users);
+    });
+
+    app.get("/api/users/:userId", async (req, res) => {
+        const userId = req.params.userId;
+        const user = await dao.findUserById(userId);
+        res.send(user);
+    });
+
+    app.post("/api/users/register", async (req, res) => {
+        console.log("[1] register");
+        const { username, password } = req.body;
+        console.log("[2] username, password", username, password);
+
+        const existingUser = await dao.findUserByCredentials(username, password);
+        console.log("[3] existingUser", existingUser);
+
+        if (existingUser) {
+            res.status(400).send("Username already exists");
+            return;
+        }
+        
+        try {
+            const newUser = await dao.createUser({ username, password }); //{ username, password, _id: Date.now().toString() };
+            console.log("[4] newUser", newUser);
+            req.session["currentUser"] = newUser;
+            console.log("[5] req.session", req.session);
+            res.send(newUser);
+        } catch (e) {
+            console.log("Error Creating User");
+        }
+    });
+
+    // Profile does not use the database. It is all with the session remembering
+    // from one session to the next -- who is logged in.
+    app.post("/api/users/profile", async (req, res) => {
+        console.log("[6] profile");
+        console.log("[7] req.session", req.session);
+
+        if (!req.session.currentUser) {
+            console.log("[8] Not logged in");
+            res.status(401).send("Not logged in");
+            return;
+        }
+
+        console.log("[9] req.session.currentUser", req.session.currentUser);
+        res.send(req.session.currentUser);
+    });
+
+    // Does not have to do with the database.
+    app.post("/api/users/logout", async (req, res) => {
+        req.session.destroy();
+        res.send("Logged out");
+    });
+
+    app.post("/api/users/login", async (req, res) => {
+        const { username, password } = req.body;
+        const existingUser = await dao.findUserByCredentials(username, password);
+        if (existingUser) {
+            req.session.currentUser = existingUser;
+            res.send(existingUser);
+        } else {
+            res.status(401).send("Invalid credentials");
+        }
+    });
+};

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({            // Creat the schema.
+    id: String,
     username: {                                     // String field that is required and unique.
         type: String, 
         required: true, 
@@ -18,6 +19,6 @@ const userSchema = new mongoose.Schema({            // Creat the schema.
         type: String,                                   // String field
         enum: ["STUDENT", "FACULTY", "ADMIN", "USER"],  // allowed string values
         default: "USER"                                 // default value if not provided.
-    },
+    }
 },{ collection: "users" });                         // Store data in "users" collection.
 export default userSchema;
