@@ -33,10 +33,12 @@ export default function UserRoutes(app) {
         delete user._id;
 
         // If the current user is logged in and has updated their profile,
-        // update the current user information.
+        // update the current user information. Only update the current user
+        // if it is the user. If the user is an Admin and is updating some other
+        // user, do not switch current user.
         const currentUser = req.session["currentUser"];
         console.log("currentUser = " + JSON.stringify(currentUser));
-        if (currentUser) {
+        if (currentUser._id === id) {
             req.session["currentUser"] = user;
         }
 
