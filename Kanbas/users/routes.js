@@ -22,6 +22,7 @@ export default function UserRoutes(app) {
 
     app.post("/api/users", async (req, res) => {
         const user = req.body;
+        // Get rid of id, to avoid error.
         delete user._id;
         const newUser = await dao.createUser(user);
         res.json(newUser);
@@ -30,6 +31,7 @@ export default function UserRoutes(app) {
     app.put("/api/users/:id", async (req, res) => {
         const id = req.params.id;
         const user = req.body;
+        // Get rid of id, to avoid error.
         delete user._id;
 
         // If the current user is logged in and has updated their profile,
