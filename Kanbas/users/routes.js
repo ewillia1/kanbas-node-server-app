@@ -21,37 +21,52 @@ export default function UserRoutes(app) {
     });
 
     app.post("/api/users", async (req, res) => {
-        const user = req.body;
-        // Get rid of id, to avoid error.
-        delete user._id;
-        const newUser = await dao.createUser(user);
-        res.json(newUser);
+        try {
+            const user = req.body;
+            // Get rid of id, to avoid error.
+            delete user._id;
+            const newUser = await dao.createUser(user);
+            res.json(newUser);
+        } catch (e) {
+            console.log("Error adding user: " + e);
+            res.status(400).send("Error adding user");
+        }
     });
 
     app.put("/api/users/:id", async (req, res) => {
-        const id = req.params.id;
-        const user = req.body;
-        // Get rid of id, to avoid error.
-        delete user._id;
-
-        // If the current user is logged in and has updated their profile,
-        // update the current user information. Only update the current user
-        // if it is the user. If the user is an Admin and is updating some other
-        // user, do not switch current user.
-        const currentUser = req.session["currentUser"];
-        console.log("currentUser = " + JSON.stringify(currentUser));
-        if (currentUser._id === id) {
-            req.session["currentUser"] = user;
+        try {
+            const id = req.params.id;
+            const user = req.body;
+            // Get rid of id, to avoid error.
+            delete user._id;
+    
+            // If the current user is logged in and has updated their profile,
+            // update the current user information. Only update the current user
+            // if it is the user. If the user is an Admin and is updating some other
+            // user, do not switch current user.
+            const currentUser = req.session["currentUser"];
+            console.log("currentUser = " + JSON.stringify(currentUser));
+            if (currentUser._id === id) {
+                req.session["currentUser"] = user;
+            }
+    
+            const status = await dao.updateUser(id, user);
+            res.json(status);
+        } catch (e) {
+            console.log("Error when updating a user: " + e);
+            res.status(400).send("Error updating user");
         }
-
-        const status = await dao.updateUser(id, user);
-        res.json(status);
     });
 
     app.delete("/api/users/:id", async (req, res) => {
-        const id = req.params.id;
-        const status = await dao.deleteUser(id);
-        res.send(status);
+        try {
+            const id = req.params.id;
+            const status = await dao.deleteUser(id);
+            res.send(status);
+        } catch (e) {
+            console.log("Error when deleting a user: " + e);
+            res.status(400).send("Error deleting user");
+        }
     });
 
     app.post("/api/users/register", async (req, res) => {
@@ -74,7 +89,8 @@ export default function UserRoutes(app) {
             console.log("[5] req.session", req.session);
             res.send(newUser);
         } catch (e) {
-            console.log("Error Creating User");
+            console.log("Error Creating User: " + e);
+            res.status(400).send("Error creating user");
         }
     });
 
