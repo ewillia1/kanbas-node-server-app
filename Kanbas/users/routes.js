@@ -2,6 +2,14 @@ import * as dao from "./dao.js";
 
 export default function UserRoutes(app) {
     app.get("/api/users", async (req, res) => {
+        const currentUser = req.session["currentUser"];
+
+        // Check to make sure not just anyone can access all users.
+        if (!currentUser || currentUser.role !== "ADMIN") {
+            res.status(401).send("Unauthorized");
+            return;
+        }
+
         const users = await dao.findAllUsers();
         res.json(users);
     });
@@ -10,6 +18,38 @@ export default function UserRoutes(app) {
         const userId = req.params.userId;
         const user = await dao.findUserById(userId);
         res.send(user);
+    });
+
+    app.post("/api/users", async (req, res) => {
+        const user = req.body;
+        delete user._id;
+        const newUser = await dao.createUser(user);
+        res.json(newUser);
+    });
+
+    app.put("/api/users/:id", async (req, res) => {
+        const id = req.params.id;
+        const user = req.body;
+        delete user._id;
+
+        console.log("in put. id = " + id + ", user = " + JSON.stringify(user));
+
+        const currentUser = req.session["currentUser"];
+        console.log("currentUser = " + JSON.stringify(currentUser));
+        // If the current user is logged in and has updated their profile,
+        // update the current user information.
+        if (currentUser) {
+            req.session["currentUser"] = user;
+        }
+
+        const status = await dao.updateUser(id, user);
+        res.json(status);
+    });
+
+    app.delete("/api/users/:id", async (req, res) => {
+        const id = req.params.id;
+        const status = await dao.deleteUser(id);
+        res.send(status);
     });
 
     app.post("/api/users/register", async (req, res) => {
@@ -26,7 +66,7 @@ export default function UserRoutes(app) {
         }
         
         try {
-            const newUser = await dao.createUser({ username, password }); //{ username, password, _id: Date.now().toString() };
+            const newUser = await dao.createUser({ username, password });
             console.log("[4] newUser", newUser);
             req.session["currentUser"] = newUser;
             console.log("[5] req.session", req.session);
@@ -60,10 +100,11 @@ export default function UserRoutes(app) {
 
     app.post("/api/users/login", async (req, res) => {
         const { username, password } = req.body;
-        const existingUser = await dao.findUserByCredentials(username, password);
-        if (existingUser) {
-            req.session.currentUser = existingUser;
-            res.send(existingUser);
+        console.log("username = " + username + ", password = " + password);
+        const ewq = await dao.findUserByCredentials(username, password);
+        if (ewq) {
+            req.session.currentUser = ewq;
+            res.send(ewq);
         } else {
             res.status(401).send("Invalid credentials");
         }
