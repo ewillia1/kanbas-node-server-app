@@ -11,6 +11,9 @@ const userSchema = new mongoose.Schema({            // Creat the schema.
         type: String, 
         required: true 
     },
+    likesAlbums: [
+        { ref: "Albums", type: mongoose.Schema.Types.ObjectId}
+    ],
     firstName: String,                              // String fields
     email: String,                                  // with no additional
     lastName: String,                               // configurations.

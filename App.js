@@ -6,6 +6,7 @@ import cors from "cors";
 import ModuleRoutes from './Kanbas/modules/routes.js';
 import AssignmentRoutes from './Kanbas/assignments/routes.js';
 import UserRoutes from './Kanbas/users/routes.js';
+import LikesRoutes from "./Napster/likes/routes.js";
 import mongoose from 'mongoose';
 import session from 'express-session'; // Import express-session for session management.
 import dotenv from 'dotenv';
@@ -38,6 +39,7 @@ ModuleRoutes(app);
 CourseRoutes(app);
 AssignmentRoutes(app);
 UserRoutes(app);
+// LikesRoutes(app);
 Lab5(app);
 Hello(app);
  
