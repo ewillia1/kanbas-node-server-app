@@ -1,7 +1,7 @@
 import * as dao from "./dao.js";
 
 export default function UserRoutes(app) {
-    app.get("/api/users", async (req, res) => {
+    const findAllUsers = async (req, res) => {
         try {
             const currentUser = req.session["currentUser"];
 
@@ -17,9 +17,9 @@ export default function UserRoutes(app) {
             console.log("Error getting all the users: " + e);
             res.status(400).send("Error getting all the users");
         }
-    });
+    };
 
-    app.get("/api/users/:userId", async (req, res) => {
+    const findUserById = async (req, res) => { 
         try {
             const userId = req.params.userId;
             const user = await dao.findUserById(userId);
@@ -28,9 +28,9 @@ export default function UserRoutes(app) {
             console.log("Error getting a user: " + e);
             res.status(400).send("Error getting a user");
         }
-    });
+    };
 
-    app.post("/api/users", async (req, res) => {
+    const createUser = async (req, res) => { 
         try {
             const user = req.body;
             // Get rid of id, to avoid error.
@@ -41,9 +41,9 @@ export default function UserRoutes(app) {
             console.log("Error adding user: " + e);
             res.status(400).send("Error adding user");
         }
-    });
+    };
 
-    app.put("/api/users/:id", async (req, res) => {
+    const updateUser = async (req, res) => { 
         try {
             const id = req.params.id;
             const user = req.body;
@@ -66,9 +66,9 @@ export default function UserRoutes(app) {
             console.log("Error updating a user: " + e);
             res.status(400).send("Error updating user");
         }
-    });
+    };
 
-    app.delete("/api/users/:id", async (req, res) => {
+    const deleteUser = async (req, res) => {
         try {
             const id = req.params.id;
             const status = await dao.deleteUser(id);
@@ -77,9 +77,9 @@ export default function UserRoutes(app) {
             console.log("Error deleting a user: " + e);
             res.status(400).send("Error deleting user");
         }
-    });
+    };
 
-    app.post("/api/users/register", async (req, res) => {
+    const registerUser = async (req, res) => {
         console.log("[1] register");
         const { username, password } = req.body;
         console.log("[2] username, password", username, password);
@@ -102,11 +102,11 @@ export default function UserRoutes(app) {
             console.log("Error creating user: " + e);
             res.status(400).send("Error creating user");
         }
-    });
+    };
 
     // Profile does not use the database. It is all with the session remembering
     // from one session to the next -- who is logged in.
-    app.post("/api/users/profile", async (req, res) => {
+    const profile = async (req, res) => { 
         console.log("[6] profile");
         console.log("[7] req.session", req.session);
 
@@ -118,15 +118,15 @@ export default function UserRoutes(app) {
 
         console.log("[9] req.session.currentUser", req.session.currentUser);
         res.send(req.session.currentUser);
-    });
+    };
 
     // Does not have to do with the database.
-    app.post("/api/users/logout", async (req, res) => {
+    const logout = async (req, res) => {
         req.session.destroy();
         res.send("Logged out");
-    });
+    };
 
-    app.post("/api/users/login", async (req, res) => {
+    const _login = async (req, res) => {
         const { username, password } = req.body;
         console.log("username = " + username + ", password = " + password);
         const ewq = await dao.findUserByCredentials(username, password);
@@ -136,5 +136,15 @@ export default function UserRoutes(app) {
         } else {
             res.status(401).send("Invalid credentials");
         }
-    });
+     };
+
+    app.get("/api/users", findAllUsers);
+    app.get("/api/users/:userId", findUserById);
+    app.post("/api/users", createUser);
+    app.put("/api/users/:id", updateUser);
+    app.delete("/api/users/:id", deleteUser);
+    app.post("/api/users/register", registerUser);
+    app.post("/api/users/profile", profile);    
+    app.post("/api/users/logout", logout);
+    app.post("/api/users/login", _login);
 };
