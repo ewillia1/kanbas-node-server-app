@@ -126,7 +126,7 @@ export default function UserRoutes(app) {
         res.send("Logged out");
     };
 
-    const _login = async (req, res) => {
+    const login = async (req, res) => {
         const { username, password } = req.body;
         console.log("username = " + username + ", password = " + password);
         const ewq = await dao.findUserByCredentials(username, password);
@@ -146,5 +146,5 @@ export default function UserRoutes(app) {
     app.post("/api/users/register", registerUser);
     app.post("/api/users/profile", profile);    
     app.post("/api/users/logout", logout);
-    app.post("/api/users/login", _login);
+    app.post("/api/users/login", login);
 };
