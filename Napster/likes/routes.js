@@ -2,7 +2,6 @@ import * as dao from "./dao.js";
 
 export default function LikesRoutes(app) {
     const likeAlbum = async (req, res) => {
-        console.log("in app.post api/likes");
         try {
             const currentUser = req.session["currentUser"];
             const album = req.body;
