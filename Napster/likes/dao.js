@@ -4,8 +4,7 @@ import albumModel from "../albums/model.js";
 // It could be that you are the first person who has liked the album, which means it does not exist in the database.
 export const userLikesAlbum = async (userId, album) => {
     const user = await userModel.findById(userId);
-    let actualAlbum = await albumModel.
-    findOne({ albumId: album.albumId });
+    let actualAlbum = await albumModel.findOne({ albumId: album.albumId });
     // First create it and then manipulate it.
     if (!actualAlbum) {
         actualAlbum = await albumModel.create(album);
