@@ -9,7 +9,7 @@ import UserRoutes from './Kanbas/users/routes.js';
 import LikesRoutes from "./Napster/likes/routes.js";
 import mongoose from 'mongoose';
 import session from 'express-session'; // Import express-session for session management.
-import dotenv from 'dotenv';
+import dotenv from 'dotenv';            // Import to read .env file.
 
 dotenv.config(); 
 
@@ -19,21 +19,30 @@ const app = express();
  
 app.use(
     cors({
-        origin: "http://localhost:3000",
-        credentials: true,
+        origin: process.env.FRONTEND_URL,    // Restrict cross origin resource shareing to the react application.
+        credentials: true,                  // Suport cookies.
     })
 );
  
 app.use(express.json());
  
-// Initialize session middleware.
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET, // Add a secret key for session encryption.
-        resave: false,
-        saveUninitialized: false
-    })
-);
+// Initialize session middleware. Configure server session AFTER cors.
+// sessionOptions = default session options.
+const sessionOptions = {
+    secret: process.env.SESSION_SECRET, // Add a secret key for session encryption.
+    resave: false,
+    saveUninitialized: false
+};
+
+if (process.env.NODE_ENV !== "development") {
+    sessionOptions.proxy = true;
+    sessionOptions.cookie = {
+        sameSite: "none",
+        secure: true
+    };
+}
+
+app.use(session(sessionOptions));
  
 ModuleRoutes(app);
 CourseRoutes(app);

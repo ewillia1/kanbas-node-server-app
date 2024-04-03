@@ -92,6 +92,10 @@ export default function UserRoutes(app) {
         }
     };
 
+    // The register API retrieves the username and password from the request body.
+    // If there's already a user with that username, then we responds with an error.
+    // Otherwise we create the new user and store it in the session's currentUser 
+    // property so we can remember that this new user is now the currently logged in user.
     const registerUser = async (req, res) => {
         console.log("[1] register");
         const { username, password } = req.body;
@@ -125,6 +129,7 @@ export default function UserRoutes(app) {
 
     // Profile does not use the database. It is all with the session remembering
     // from one session to the next -- who is logged in.
+    // If a user has already logged in, we can retrieve the current user by using the profile API.
     const profile = async (req, res) => { 
         console.log("[6] profile");
         console.log("[7] req.session", req.session);
@@ -141,18 +146,21 @@ export default function UserRoutes(app) {
 
     // Does not have to do with the database.
     const logout = async (req, res) => {
-        req.session.destroy();
+        req.session.destroy();          // Logout users by destroying the session.
         res.send("Logged out");
     };
 
+    // An existing user can identify themselves by providing their credentials as username and password. 
+    // The login API below looks up the user by their credentials and responds with the user if they exist. 
+    // Otherwise we respond with an error.
     const login = async (req, res) => {
         const { username, password } = req.body;
         console.log("username = " + username + ", password = " + password);
-        const ewq = await dao.findUserByCredentials(username, password);
-        if (ewq) {
-            req.session.currentUser = ewq;
+        const currentUser = await dao.findUserByCredentials(username, password);
+        if (currentUser) {
+            req.session.currentUser = currentUser;
             console.log("req.session.currentUser = " + req.session.currentUser);
-            res.send(ewq);
+            res.send(currentUser);
         } else {
             res.status(401).send("Invalid credentials");
         }
