@@ -39,7 +39,7 @@ ModuleRoutes(app);
 CourseRoutes(app);
 AssignmentRoutes(app);
 UserRoutes(app);
-// LikesRoutes(app);
+LikesRoutes(app);
 Lab5(app);
 Hello(app);
  
