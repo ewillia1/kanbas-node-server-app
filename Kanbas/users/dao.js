@@ -21,3 +21,5 @@ export const findUserByCredentials = (username, password) =>  userModel.findOne(
 export const updateUser = (userId, user) =>  userModel.updateOne({ _id: userId }, { $set: user });
 
 export const deleteUser = (userId) => userModel.deleteOne({ _id: userId });
+
+export const findUsersByRole = (role) => userModel.find({ role: role });

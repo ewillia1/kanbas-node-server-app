@@ -1,18 +1,62 @@
 import * as dao from "./dao.js";
 
 export default function UserRoutes(app) {
-    const findAllUsers = async (req, res) => {
-        try {
-            const currentUser = req.session["currentUser"];
-
+    const findAllUsersPost = async (req, res) => {
+        try {        
             // Check to make sure not just anyone can access all users.
+            const currentUser = req.session["currentUser"];
+            console.log("findAllUseres. currentUser = " + JSON.stringify(currentUser));
             if (!currentUser || currentUser.role !== "ADMIN") {
+                console.log("!currentUser'");
                 res.status(401).send("Unauthorized");
+                return;
+            }
+
+            // Parse the role from the query string, 
+            // and then users the DAO to retrieve users
+            // with that particular role.
+            const { role } = req.body;
+            console.log("Filter ROLE = " + role);
+            if (role) {
+                const users = await dao.findUsersByRole(role);
+                res.json(users);
                 return;
             }
     
             const users = await dao.findAllUsers();
             res.json(users);
+            return;
+        } catch (e) {
+            console.log("Error getting all the users: " + e);
+            res.status(400).send("Error getting all the users");
+        }
+    };
+
+    const findAllUsers = async (req, res) => {
+        try {        
+            // Check to make sure not just anyone can access all users.
+            const currentUser = req.session["currentUser"];
+            console.log("findAllUseres. currentUser = " + JSON.stringify(currentUser));
+            if (!currentUser || currentUser.role !== "ADMIN") {
+                console.log("!currentUser'");
+                res.status(401).send("Unauthorized");
+                return;
+            }
+
+            // Parse the role from the query string, 
+            // and then users the DAO to retrieve users
+            // with that particular role.
+            const { role } = req.body;
+            console.log("Filter ROLE = " + role);
+            if (role) {
+                const users = await dao.findUsersByRole(role);
+                res.json(users);
+                return;
+            }
+    
+            const users = await dao.findAllUsers();
+            res.json(users);
+            return;
         } catch (e) {
             console.log("Error getting all the users: " + e);
             res.status(400).send("Error getting all the users");
@@ -132,13 +176,15 @@ export default function UserRoutes(app) {
         const ewq = await dao.findUserByCredentials(username, password);
         if (ewq) {
             req.session.currentUser = ewq;
+            console.log("req.session.currentUser = " + req.session.currentUser);
             res.send(ewq);
         } else {
             res.status(401).send("Invalid credentials");
         }
-     };
+    };
 
     app.get("/api/users", findAllUsers);
+    app.post("/api/users", findAllUsersPost);
     app.get("/api/users/:userId", findUserById);
     app.post("/api/users", createUser);
     app.put("/api/users/:id", updateUser);
