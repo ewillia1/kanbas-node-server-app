@@ -101,7 +101,13 @@ export default function UserRoutes(app) {
         console.log("[3] existingUser", existingUser);
 
         if (existingUser) {
-            res.status(400).send("Username already exists");
+            res.status(400).send("User already exists");
+            return;
+        }
+
+        const user = await dao.findUserByUsername(req.body.username);
+        if (user) {
+            res.status(400).json({ message: "Username already taken" });
             return;
         }
         
