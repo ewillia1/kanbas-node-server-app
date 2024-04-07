@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import courseSchema from "./schema.js";
+import schema from "./schema.js";
 
 // Once you give a model a name (ex. Courses), it is unique.
-const courseModel = mongoose.model("Courses", courseSchema);
+const courseModel = mongoose.model("Courses", schema);
 
 // Export the model and use it to implement all the CRUD operations that we need.
 // Wrap all the low level functions that are very idiosyncratic about that specific Mongo vender.
