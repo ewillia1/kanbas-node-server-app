@@ -23,5 +23,5 @@ const userSchema = new mongoose.Schema({            // Creat the schema.
         enum: ["STUDENT", "FACULTY", "ADMIN", "USER"],  // allowed string values
         default: "USER"                                 // default value if not provided.
     }
-},{ collection: "users" });                         // Store data in "users" collection.
+}, { collection: "users" });                         // Store data in "users" collection.
 export default userSchema;
