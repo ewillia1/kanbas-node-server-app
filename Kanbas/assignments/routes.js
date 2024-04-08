@@ -23,9 +23,6 @@ function AssignmentRoutes(app) {
             console.log("Error getting all the assignments: " + e);
             res.status(400).send("Error getting all the assignments");
         }
-        const { cid } = req.params;
-        const assignments = db.assignments.filter((m) => m.course === cid);
-        res.send(assignments);
     };
 
     const findAssignmentById = async (req, res) => {
@@ -59,10 +56,9 @@ function AssignmentRoutes(app) {
     // Reply to client with the newly created assignment.
     const createAssignment = async (req, res) => {
         const { cid } = req.params;
-        const assigment = {
-            ...req.body,
-            course: cid
-        };
+        const assigment = req.body;
+        // Get rid of id, to avoid error.
+        delete assigment._id;
         const newAssignment = await dao.createAssignment(assigment);
         res.send(newAssignment);
     };
@@ -97,13 +93,16 @@ function AssignmentRoutes(app) {
     // Respond with a 200 status signifying success.
     // Return a 404 if the assignment is not found.
     const deleteAssignment = async (req, res) => {
+        console.log("in ROUTES.JS. deleteAssignment.");
         try {
             const id = req.params.id;
+            console.log("id of assignment to delete = " + id);
             if (!id) {
                 return res.status(400).json({ error: "Assignment id is required" });
             }
 
             const status = await dao.deleteAssignment(id);
+            console.log("status = " + JSON.stringify(status));
             res.send(status);
         } catch (e) {
             console.log("Error deleting an assignment: " + e);

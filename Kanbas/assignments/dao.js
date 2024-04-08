@@ -1,17 +1,13 @@
 import assignmentModel from "./model.js";
 
 export const createAssignment = (assignment) => {
+    console.log("IN DAO. assignment = " + JSON.stringify(assignment));
     return assignmentModel.create(assignment);
 };
 
 export const findAssignmentsForCourse = (courseId) => {
-    try {
-        const assigments = assignmentModel.find({ course: courseId});
-        return assigments;
-    } catch (error) {
-        console.error("Error finding assignments: ", error);
-        throw new Error("Failed to find assignments");
-    }
+    const assigments = assignmentModel.find({ course: courseId});
+    return assigments;
 };
 
 export const findAssignmentById = (assignmentId) => {
@@ -19,9 +15,12 @@ export const findAssignmentById = (assignmentId) => {
 };
 
 export const updateAssignment = (assignmentId, assignment) => {
+    console.log("IN DAO. assignmentId = " + assignmentId);
+    console.log("IN DAO. assignment = " + JSON.stringify(assignment));
     return assignmentModel.updateOne({_id: assignmentId}, {$set: assignment});
 };
 
 export const deleteAssignment = (assignmentId) => {
+    console.log("IN DAO. deleteAssignment. assignmentId = " + assignmentId);
     return assignmentModel.deleteOne({_id: assignmentId});
 };
