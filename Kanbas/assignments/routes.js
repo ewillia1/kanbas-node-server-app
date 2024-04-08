@@ -27,7 +27,7 @@ function AssignmentRoutes(app) {
 
     const findAssignmentById = async (req, res) => {
         try {
-            // Extrac the assigment id from the request parameters.
+            // Extract the assigment id from the request parameters.
             const assignmentId = req.params.assignmentId;
 
             // Check if assignmentId is provided.
