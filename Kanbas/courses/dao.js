@@ -21,14 +21,10 @@ export const findCourseById = (courseId) => {
 // $set operator patterns matches fields and replaces with new value.
 // $set automatically looks for the fields in the new object and compare them
 // against the records with the same property and will swap out the values.
-export const updateCourse = (courseid, course) => {
-    return courseModel.updateOne({_id: courseid}, {$set: course});
+export const updateCourse = (courseId, course) => {
+    return courseModel.updateOne({_id: courseId}, {$set: course});
 };
 
-export const deleteCourse = (courseid) => {
-    return courseModel.deleteOne({_id: courseid});
+export const deleteCourse = (courseId) => {
+    return courseModel.deleteOne({_id: courseId});
 };
-
-// Commented out since I personally do not have fields for department of instructor.
-// export const findCourseByDepartment = (department) => courseModel.find({department});
-// export const findCourseByInstructor = (instructor) => courseModel.find({instructor});
