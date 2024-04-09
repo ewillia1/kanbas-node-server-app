@@ -2,11 +2,8 @@ import userModel from "./model.js";
 
 // CRUD.
 export const createUser = (user) => userModel.create(user);
-// Another way to write createUser,
-// export const createUser = (user) => {
-//     delete user._id      // Remove _id field just in case client sends it (database will create _id for us instead).
-//     return userModel.create(user);
-// }
+
+export const fetchUsersForGrades = (userIdArray) => userModel.find({ _id: { $in: userIdArray } });;
 
 export const findAllUsers = () => userModel.find();
 

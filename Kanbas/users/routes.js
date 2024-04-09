@@ -1,6 +1,26 @@
 import * as dao from "./dao.js";
+import * as enrollmentsDao from "../enrollments/dao.js";
 
 export default function UserRoutes(app) {
+    // Fetch users for grades based on enrollments.
+    const fetchUsersForGrades = async (req, res) => {
+        try {
+            // Find enrollments for the given course.
+            const cid = req.params.cid;
+            const enrollments = await enrollmentsDao.findEnrollmentsForCourse(cid);
+
+            // Extract user ids from enrollments.
+            const userIds = enrollments.map(enrollment => enrollment.user);
+
+            // Find users based on user id.
+            const users = await dao.fetchUsersForGrades(userIds);
+            res.json(users);
+        } catch (e) {
+            console.log("Error fetching users for grades: " + e);
+            res.status(400).send("Error fetching users for grades");
+        }
+    };
+
     const findAllUsers = async (req, res) => {
         try {        
             // Check to make sure not just anyone can access all users.
@@ -166,6 +186,8 @@ export default function UserRoutes(app) {
         }
     };
 
+    // app.get("/api/users/forgrades", fetchUsersForGrades);
+    app.get("/api/courses/:cid/grades/users", fetchUsersForGrades);
     app.get("/api/users", findAllUsers);
     app.get("/api/users/:userId", findUserById);
     app.post("/api/users", createUser);
