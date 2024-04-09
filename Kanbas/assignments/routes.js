@@ -1,4 +1,3 @@
-import db from "../Database/index.js";
 import * as dao from "./dao.js";
 
 function AssignmentRoutes(app) {
@@ -47,7 +46,7 @@ function AssignmentRoutes(app) {
             res.status(200).json({ assignment });
         } catch (e) {
             console.log("Error getting an assignment: " + e);
-            res.status(400).send("Error getting a assignment");
+            res.status(400).send("Error getting an assignment");
         }
     };
 
