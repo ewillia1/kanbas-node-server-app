@@ -1,6 +1,8 @@
 import * as dao from "./dao.js";
 import * as enrollmentsDao from "../enrollments/dao.js";
 
+let _currentUser = null;
+
 export default function UserRoutes(app) {
     // Fetch users for grades based on enrollments.
     const fetchUsersForGrades = async (req, res) => {
@@ -24,7 +26,7 @@ export default function UserRoutes(app) {
     const findAllUsers = async (req, res) => {
         try {        
             // Check to make sure not just anyone can access all users.
-            const currentUser = req.session["currentUser"];
+            const currentUser = _currentUser;
             console.log("findAllUseres. currentUser = " + JSON.stringify(currentUser));
             if (!currentUser || currentUser.role !== "ADMIN") {
                 console.log("!currentUser'");
@@ -87,10 +89,10 @@ export default function UserRoutes(app) {
             // update the current user information. Only update the current user
             // if it is the user. If the user is an Admin and is updating some other
             // user, do not switch current user.
-            const currentUser = req.session["currentUser"];
+            const currentUser = _currentUser;
             console.log("currentUser = " + JSON.stringify(currentUser));
             if (currentUser._id === id) {
-                req.session["currentUser"] = user;
+                _currentUser = user;
             }
     
             const status = await dao.updateUser(id, user);
@@ -138,7 +140,7 @@ export default function UserRoutes(app) {
         try {
             const newUser = await dao.createUser({ username, password });
             console.log("[4] newUser", newUser);
-            req.session["currentUser"] = newUser;
+            _currentUser = newUser;
             console.log("[5] req.session", req.session);
             res.send(newUser);
         } catch (e) {
@@ -154,14 +156,14 @@ export default function UserRoutes(app) {
         console.log("[6] profile");
         console.log("[7] req.session", req.session);
 
-        if (!req.session.currentUser) {
+        if (!_currentUser) {
             console.log("[8] Not logged in");
             res.status(401).send("Not logged in");
             return;
         }
 
-        console.log("[9] req.session.currentUser", req.session.currentUser);
-        res.send(req.session.currentUser);
+        console.log("[9] _currentUser", _currentUser);
+        res.send(_currentUser);
     };
 
     // Does not have to do with the database.
@@ -178,8 +180,8 @@ export default function UserRoutes(app) {
         console.log("username = " + username + ", password = " + password);
         const currentUser = await dao.findUserByCredentials(username, password);
         if (currentUser) {
-            req.session.currentUser = currentUser;
-            console.log("req.session.currentUser = " + req.session.currentUser);
+            _currentUser = currentUser;
+            console.log("_currentUser = " + _currentUser);
             res.send(currentUser);
         } else {
             res.status(401).send("Invalid credentials");
