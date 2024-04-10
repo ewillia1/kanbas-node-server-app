@@ -70,6 +70,7 @@ export default function UserRoutes(app) {
             const user = req.body;
             // Get rid of id, to avoid error.
             delete user._id;
+            console.log("user to create = " + JSON.stringify(user));
             const newUser = await dao.createUser(user);
             res.json(newUser);
         } catch (e) {
@@ -188,7 +189,6 @@ export default function UserRoutes(app) {
         }
     };
 
-    // app.get("/api/users/forgrades", fetchUsersForGrades);
     app.get("/api/courses/:cid/grades/users", fetchUsersForGrades);
     app.get("/api/users", findAllUsers);
     app.get("/api/users/:userId", findUserById);
