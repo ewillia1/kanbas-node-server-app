@@ -9,7 +9,7 @@ function QuizRoutes(app) {
         const quizIndex = db.quizzes.findIndex((q) => q._id === qid);
         db.quizzes[quizIndex] = {...db.quizzes[quizIndex], ...req.body};
         if (!db.quizzes) {
-            res.status(404).json({ message: `Unable to update Quiz with ID ${id}` });
+            res.status(404).json({ message: `Unable to update Quiz with ID ${qid}` });
         }
         res.sendStatus(204);
     });
@@ -22,7 +22,7 @@ function QuizRoutes(app) {
         const { qid } = req.params;
         db.quizzes = db.quizzes.filter((q) => q._id !== qid);
         if (!db.quizzes) {
-            res.status(404).json({ message: `Unable to delete Quiz with ID ${id}` });
+            res.status(404).json({ message: `Unable to delete Quiz with ID ${qid}` });
         }
         res.sendStatus(200);
     });
