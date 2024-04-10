@@ -8,12 +8,12 @@ function QuizRoutes(app) {
         const { cid } = req.params;
         console.log("cid = " + cid);
 
-        const searchTerm = req.query.q; // Retrieve the search term from the query parameters
+        const searchTerm = req.query.q; // Retrieve the search term from the query parameters.
         console.log("searchTerm = " + searchTerm);
         try {
             let quizzes = db.quizzes.filter((q) => q.course === cid);
     
-            // If there's a search term, filter quizzes based on the title containing the search term
+            // If there is a search term, filter quizzes based on the title containing the search term.
             if (searchTerm) {
                 quizzes = quizzes.filter((q) => q.title.includes(searchTerm));
             }
