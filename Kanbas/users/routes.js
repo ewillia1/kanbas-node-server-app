@@ -1,5 +1,6 @@
 import * as dao from "./dao.js";
 import * as enrollmentsDao from "../enrollments/dao.js";
+import * as coursesDao from "../courses/dao.js";
 
 let _currentUser = null;
 
@@ -189,6 +190,27 @@ export default function UserRoutes(app) {
         }
     };
 
+    const findUserCourses = async (req, res) => {
+        const userId = req.params.userId;
+        try {
+            // Find all enrollments for the given user.
+            const userEnrollments = await enrollmentsDao.findAllEnrollmentsForUser(userId);
+
+            // Extract course ids from user's enrollments.
+            const courseIds = userEnrollments.map(enrollment => enrollment.course);
+
+            // Find course details for the extracted course ids.
+            const userCourses = await coursesDao.findListOfCourses(courseIds);
+            console.log("Found all the courses the user is enrolled in!");
+            console.log("usersCourses = " + JSON.stringify(userCourses));
+
+            res.json(userCourses);
+        } catch (e) {
+            console.error('Error finding user courses:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    };
+
     app.get("/api/courses/:cid/grades/users", fetchUsersForGrades);
     app.get("/api/users", findAllUsers);
     app.get("/api/users/:userId", findUserById);
@@ -199,4 +221,5 @@ export default function UserRoutes(app) {
     app.post("/api/users/profile", profile);    
     app.post("/api/users/logout", logout);
     app.post("/api/users/login", login);
+    app.get("/api/users/:userId/courses", findUserCourses);
 };

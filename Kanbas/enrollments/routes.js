@@ -81,10 +81,35 @@ function EnrollmentRoutes(app) {
         }
     };
 
+    const findAllEnrollments = async (req, res) => {
+        try {
+            const enrollments = await dao.findAllEnrollments();
+            res.send(enrollments);
+            return;
+        } catch (e) {
+            console.log("Error getting all the enrollments: " + e);
+            res.status(400).send("Error getting all the enrollments");
+        }
+    };
+
+    const findAllEnrollmentsForUser = async (req, res) => {
+        try {
+            const userId = req.params.userId;
+            const enrollments = await dao.findAllEnrollmentsForUser(userId);
+            res.set(enrollments);
+            return;
+        } catch (e) {
+            console.error('Error finding enrollments for user:', e);
+            res.status(400).send("Error getting all the enrollments for user");
+        }
+    };
+
     app.get("/api/courses/:cid/enrollments", findEnrollmentsForCourse);
     app.get("/api/courses/:cid/enrollments/:enrollmentId", findEnrollmentById)
     app.post("/api/courses/:cid/enrollments", createEnrollment); 
     app.put("/api/enrollments/:id", updateEnrollment);
     app.delete("/api/enrollments/:id", deleteEnrollment);
+    app.get("/api/enrollments", findAllEnrollments);
+    app.get("/api/enrollments/user/:userId", findAllEnrollmentsForUser);
 }
 export default EnrollmentRoutes;

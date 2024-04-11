@@ -28,3 +28,8 @@ export const updateCourse = (courseId, course) => {
 export const deleteCourse = (courseId) => {
     return courseModel.deleteOne({_id: courseId});
 };
+
+// Find alist of courses given a list of courseIds.
+export const findListOfCourses = (courseIds) => {
+    return courseModel.find({ _id: { $in: courseIds } });
+};

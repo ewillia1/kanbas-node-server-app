@@ -20,3 +20,11 @@ export const updateEnrollment = (enrollmentId, enrollment) => {
 export const deleteEnrollment = (enrollmentId) => {
     return enrollmentModel.deleteOne({_id: enrollmentId});
 };
+
+export const findAllEnrollments = () => {
+    return enrollmentModel.find();
+};
+
+export const findAllEnrollmentsForUser = (userId) => {
+    return enrollmentModel.find({ user: userId });
+};

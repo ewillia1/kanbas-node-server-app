@@ -81,10 +81,28 @@ function CourseRoutes(app) {
         }
     };
 
+    const findListOfCourses = async (req, res) => {
+        try {
+            const courseIds = req.query.courseIds || req.body.courseIds;
+            if (!courseIds || !Array.isArray(courseIds)) {
+                return res.status(400).send("Course IDs must be provided as an array.");
+            }
+    
+            // Find courses based on the provided course IDs.
+            const courses = await dao.findListOfCourses(courseIds);
+    
+            res.json(courses);
+        } catch (e) {
+            console.log("Error finding the list of courses: " + e);
+            res.status(400).send("Error finding the list of course");
+        }
+    };
+
     app.get("/api/courses", findAllCourses);
     app.get("/api/courses/:courseId", findCourseById); 
     app.post("/api/courses", createCourse);
     app.put("/api/courses/:id", updateCourse);
-    app.delete("/api/courses/:id", deleteCourse);    
+    app.delete("/api/courses/:id", deleteCourse);  
+    app.get("/api/coursesList", findListOfCourses);  
 }
 export default CourseRoutes;
