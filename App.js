@@ -22,7 +22,7 @@ const app = express();
 
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL,    // Restrict cross origin resource shareing to the react application.
+        origin: process.env.FRONTEND_URL,    // Restrict cross origin resource sharing to the react application.
         credentials: true,                   // Support cookies.
     })
 );
