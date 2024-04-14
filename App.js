@@ -12,6 +12,7 @@ import LikesRoutes from "./Napster/likes/routes.js";
 import mongoose from 'mongoose';
 import session from 'express-session';  // Import express-session for session management.
 import dotenv from 'dotenv';            // Import to read .env file.
+import QuizRoutes from './Kanbas/quizzes/routes.js';
 
 dotenv.config(); 
 
@@ -55,6 +56,7 @@ EnrollmentRoutes(app);
 GradeRoutes(app);
 UserRoutes(app);
 LikesRoutes(app);
+QuizRoutes(app);
 Lab5(app);
 Hello(app);
  
