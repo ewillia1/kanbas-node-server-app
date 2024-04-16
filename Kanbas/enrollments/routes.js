@@ -36,11 +36,14 @@ function EnrollmentRoutes(app) {
     };
 
     const createEnrollment = async (req, res) => {
+        console.log("in createEnrollment!!!!!!!!!");
         const { cid } = req.params;
         const enrollment = req.body;
         // Get rid of id, to avoid error.
         delete enrollment._id;
+        console.log("CREATE ENROLLMENT. cid = " + cid + ", enrollment = " + JSON.stringify(enrollment));
         const newEnrollment = await dao.createEnrollment(enrollment);
+        console.log("newEnrollment = " + JSON.stringify(newEnrollment));
         res.send(newEnrollment);
     };
 
@@ -104,6 +107,21 @@ function EnrollmentRoutes(app) {
         }
     };
 
+    const deleteAllEnrollmentsForCourse = async (req, res) => {
+        try {
+            const cid = req.params.cid;
+            if (!cid) {
+                return res.status(400).json({ error: "Course id is required" });
+            }
+
+            const status = await dao.deleteAllEnrollmentsForCourse(cid);
+            res.json(status);
+        } catch (e) {
+            console.log("Error deleting all enrollments for course: " + e);
+            res.status(400).send("Error deleting all enrollments for course");
+        }
+    };
+
     app.get("/api/courses/:cid/enrollments", findEnrollmentsForCourse);
     app.get("/api/courses/:cid/enrollments/:enrollmentId", findEnrollmentById)
     app.post("/api/courses/:cid/enrollments", createEnrollment); 
@@ -111,5 +129,6 @@ function EnrollmentRoutes(app) {
     app.delete("/api/enrollments/:id", deleteEnrollment);
     app.get("/api/enrollments", findAllEnrollments);
     app.get("/api/enrollments/user/:userId", findAllEnrollmentsForUser);
+    app.delete("/api/courses/:cid/enrollments", deleteAllEnrollmentsForCourse);
 }
 export default EnrollmentRoutes;

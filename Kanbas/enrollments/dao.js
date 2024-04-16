@@ -1,6 +1,7 @@
 import enrollmentModel from "./model.js";
 
 export const createEnrollment = (enrollment) => {
+    console.log("DAO. ENROLLMENT!!!");
     return enrollmentModel.create(enrollment);
 };
 
@@ -27,4 +28,8 @@ export const findAllEnrollments = () => {
 
 export const findAllEnrollmentsForUser = (userId) => {
     return enrollmentModel.find({ user: userId });
+};
+
+export const deleteAllEnrollmentsForCourse = (courseId) => {
+    return enrollmentModel.deleteMany({ course: courseId });
 };
