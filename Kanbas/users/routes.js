@@ -83,18 +83,27 @@ export default function UserRoutes(app) {
     const updateUser = async (req, res) => { 
         try {
             const id = req.params.id;
+            console.log("updateUser. id = " + id);
+            console.log("updateUser. typeof(id) = " + typeof(id));
             const user = req.body;
+            console.log("users = " + JSON.stringify(user));
             // Get rid of id, to avoid error.
             delete user._id;
-    
-            // If the current user is logged in and has updated their profile,
-            // update the current user information. Only update the current user
-            // if it is the user. If the user is an Admin and is updating some other
-            // user, do not switch current user.
+
             const currentUser = _currentUser;
             console.log("currentUser = " + JSON.stringify(currentUser));
-            if (currentUser._id === id) {
-                _currentUser = user;
+            // Convert the id to string for comparison.
+            const currentUserIDString = String(_currentUser._id);
+    
+            // If the current user is logged in and has updated their profile,
+            // update the current user information. 
+            // Only update the current user
+            // if it is the user. If the user is an Admin and is updating some other
+            // user, do not switch current user.
+            if (currentUserIDString.localeCompare(id) == 0) {
+                console.log("in if (currentUserIDString.localeCompare(id) == 0) . user = " + JSON.stringify(user));
+                _currentUser = { ...user, _id: currentUser._id };
+                console.log("in if (currentUserIDString.localeCompare(id) == 0) . _currentUser = " + JSON.stringify(_currentUser));
             }
     
             const status = await dao.updateUser(id, user);
