@@ -38,6 +38,7 @@ const sessionOptions = {
 };
 
 if (process.env.NODE_ENV !== "development") {
+    console.log("IN APP.JS. process.env.NODE_ENV = " + process.env.NODE_ENV);
     sessionOptions.proxy = true;
     sessionOptions.cookie = {
         sameSite: "none",
