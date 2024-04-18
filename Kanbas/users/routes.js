@@ -2,7 +2,7 @@ import * as dao from "./dao.js";
 import * as enrollmentsDao from "../enrollments/dao.js";
 import * as coursesDao from "../courses/dao.js";
 
-let _currentUser = null;
+// let _currentUser = null;
 
 export default function UserRoutes(app) {
     // Fetch users for grades based on enrollments.
@@ -27,8 +27,8 @@ export default function UserRoutes(app) {
     const findAllUsers = async (req, res) => {
         try {        
             // Check to make sure not just anyone can access all users.
-            // const currentUser = req.session["currentUser"];
-            const currentUser = _currentUser;
+            const currentUser = req.session["currentUser"];
+            // const currentUser = _currentUser;
             console.log("findAllUseres. currentUser = " + JSON.stringify(currentUser));
             if (!currentUser || currentUser.role !== "ADMIN") {
                 console.log("!currentUser'");
@@ -87,15 +87,23 @@ export default function UserRoutes(app) {
             console.log("updateUser. id = " + id);
             console.log("updateUser. typeof(id) = " + typeof(id));
             const user = req.body;
-            console.log("users = " + JSON.stringify(user));
+            console.log("user = " + JSON.stringify(user));
             // Get rid of id, to avoid error.
             delete user._id;
 
-            // const currentUser = req.session["currentUser"];
-            const currentUser = _currentUser;
-            console.log("currentUser = " + JSON.stringify(currentUser));
+            // const currentUser = _currentUser;
             // Convert the id to string for comparison.
-            const currentUserIDString = String(_currentUser._id);
+            // const currentUserIDString = String(_currentUser._id);
+
+            const currentUser = req.session["currentUser"];
+            console.log("currentUser = " + JSON.stringify(currentUser));
+            console.log("currentUser._id = " + currentUser._id);
+            console.log("typeof(currentUser._id) = " + typeof(currentUser._id));
+            console.log("id = " +id);
+            console.log("typeof(id) = " + typeof(id));
+
+            // Sometimes the _id comes back as an object. So this is just here as a safety precaution.
+            const currentUserIDString = String(currentUser._id);
     
             // If the current user is logged in and has updated their profile,
             // update the current user information. 
@@ -104,9 +112,11 @@ export default function UserRoutes(app) {
             // user, do not switch current user.
             if (currentUserIDString.localeCompare(id) == 0) {
                 console.log("in if (currentUserIDString.localeCompare(id) == 0) . user = " + JSON.stringify(user));
-                // req.session["currentUser"] = { ...user, _id: currentUser._id };
-                _currentUser = { ...user, _id: currentUser._id };
-                console.log("in if (currentUserIDString.localeCompare(id) == 0) . _currentUser = " + JSON.stringify(_currentUser));
+                req.session["currentUser"] = { ...user, _id: currentUser._id };
+                console.log("in if (currentUserIDString.localeCompare(id) == 0) . req.session.currentUser = " + JSON.stringify(req.session.currentUser));
+
+                // _currentUser = { ...user, _id: currentUser._id };
+                // console.log("in if (currentUserIDString.localeCompare(id) == 0) . _currentUser = " + JSON.stringify(_currentUser));
             }
     
             const status = await dao.updateUser(id, user);
@@ -137,6 +147,12 @@ export default function UserRoutes(app) {
         const { username, password } = req.body;
         console.log("[2] username, password", username, password);
 
+        const user = await dao.findUserByUsername(req.body.username);
+        if (user) {
+            res.status(400).json({ message: "Username already taken" });
+            return;
+        }
+
         const existingUser = await dao.findUserByCredentials(username, password);
         console.log("[3] existingUser", existingUser);
 
@@ -144,18 +160,12 @@ export default function UserRoutes(app) {
             res.status(400).send("User already exists");
             return;
         }
-
-        const user = await dao.findUserByUsername(req.body.username);
-        if (user) {
-            res.status(400).json({ message: "Username already taken" });
-            return;
-        }
         
         try {
             const newUser = await dao.createUser({ username, password });
             console.log("[4] newUser", newUser);
-            // req.session["currentUser"] = newUser;
-            _currentUser = newUser;
+            req.session["currentUser"] = newUser;
+            // _currentUser = newUser;
             console.log("[5] req.session", req.session);
             res.send(newUser);
         } catch (e) {
@@ -171,17 +181,18 @@ export default function UserRoutes(app) {
         console.log("[6] profile");
         console.log("[7] req.session", req.session);
 
-        // if (!req.session.currentUser) {
-        if (!_currentUser) {
+        if (!req.session.currentUser) {
+        // if (!_currentUser) {
             console.log("[8] Not logged in");
             res.status(401).send("Not logged in");
             return;
         }
 
-        // console.log("[9] req.session.currentUser", req.session.currentUser);
-        // res.send(req.session.currentUser);
-        console.log("[9] _currentUser", _currentUser);
-        res.send(_currentUser);
+        console.log("[9] req.session.currentUser", req.session.currentUser);
+        res.send(req.session.currentUser);
+
+        // console.log("[9] _currentUser", _currentUser);
+        // res.send(_currentUser);
     };
 
     // Does not have to do with the database.
@@ -198,10 +209,12 @@ export default function UserRoutes(app) {
         console.log("username = " + username + ", password = " + password);
         const currentUser = await dao.findUserByCredentials(username, password);
         if (currentUser) {
-            // req.session.currentUser = currentUser;
-            // console.log("req.session.currentUser = " + req.session.currentUser);
-            _currentUser = currentUser;
-            console.log("_currentUser = " + _currentUser);
+            req.session.currentUser = currentUser;
+            console.log("req.session.currentUser = " + req.session.currentUser);
+
+            // _currentUser = currentUser;
+            // console.log("_currentUser = " + _currentUser);
+
             res.send(currentUser);
         } else {
             res.status(401).send("Invalid credentials");
