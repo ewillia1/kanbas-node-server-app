@@ -36,15 +36,20 @@ function EnrollmentRoutes(app) {
     };
 
     const createEnrollment = async (req, res) => {
-        console.log("in createEnrollment!!!!!!!!!");
-        const { cid } = req.params;
-        const enrollment = req.body;
-        // Get rid of id, to avoid error.
-        delete enrollment._id;
-        console.log("CREATE ENROLLMENT. cid = " + cid + ", enrollment = " + JSON.stringify(enrollment));
-        const newEnrollment = await dao.createEnrollment(enrollment);
-        console.log("newEnrollment = " + JSON.stringify(newEnrollment));
-        res.send(newEnrollment);
+        try {
+            console.log("in createEnrollment!!!!!!!!!");
+            const { cid } = req.params;
+            const enrollment = req.body;
+            // Get rid of id, to avoid error.
+            delete enrollment._id;
+            console.log("CREATE ENROLLMENT. cid = " + cid + ", enrollment = " + JSON.stringify(enrollment));
+            const newEnrollment = await dao.createEnrollment(enrollment);
+            console.log("newEnrollment = " + JSON.stringify(newEnrollment));
+            res.send(newEnrollment);
+        } catch (e) {
+            console.log("Error creating an enrollment: " + e);
+            res.status(400).send("Error creating an enrollment");
+        }
     };
 
     const updateEnrollment = async (req, res) => {
