@@ -108,6 +108,16 @@ export default function UserRoutes(app) {
                 req.session["currentUser"] = { ...user, _id: currentUser._id };
                 console.log("in if (currentUserIDString.localeCompare(id) == 0) . req.session.currentUser = " + JSON.stringify(req.session.currentUser));
             }
+
+            // If the user updated their username, check to see if it already exists in the database
+            // If it does return an error. Only run this check if the username has been changed.
+            if (user.username !== currentUser.username) {
+                const existingUser = await dao.findUserByUsername(user.username);
+                if (existingUser && existingUser._id !== userId) {
+                    console.log("username already exists!");
+                    return res.status(400).json({ message: "Username already exists." });
+                }
+            }
     
             const status = await dao.updateUser(id, user);
             res.json(status);
